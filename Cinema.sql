@@ -3,10 +3,10 @@ DROP DATABASE IF EXISTS Cinema;
 CREATE DATABASE Cinema;
 USE Cinema;
 
---таблицы узлов:
---Фильмы
---Режиссеры
---Актеры
+--С‚Р°Р±Р»РёС†С‹ СѓР·Р»РѕРІ:
+--Р¤РёР»СЊРјС‹
+--Р РµР¶РёСЃСЃРµСЂС‹
+--РђРєС‚РµСЂС‹
 
 CREATE TABLE Movies
 (
@@ -32,11 +32,11 @@ CREATE TABLE Actors
 ) AS NODE;
 
 
---таблицы ребер:
---Режиссировал
---Играет в
---Рекомендует
---Дружит с 
+--С‚Р°Р±Р»РёС†С‹ СЂРµР±РµСЂ:
+--Р РµР¶РёСЃСЃРёСЂРѕРІР°Р»
+--РРіСЂР°РµС‚ РІ
+--Р РµРєРѕРјРµРЅРґСѓРµС‚
+--Р”СЂСѓР¶РёС‚ СЃ 
 
 CREATE TABLE Directed AS EDGE; --(DirectorID INT, MovieID INT)
 CREATE TABLE ActedIn(RoleAct VARCHAR(255)) AS EDGE; --(ActorID INT, MovieID INT)
@@ -44,7 +44,7 @@ CREATE TABLE Recommends AS EDGE; --(DirectorID INT, RecommendedMovieID INT)
 CREATE TABLE FriendsWith AS EDGE; --(ActorID INT, ActorID INT)
 
 
---Заполнение узлов и ребер:
+--Р—Р°РїРѕР»РЅРµРЅРёРµ СѓР·Р»РѕРІ Рё СЂРµР±РµСЂ:
 INSERT INTO Movies(MovieID, Title, ReleaseYear, Genre, Rating) 
 VALUES (1, 'The Shawshank Redemption', 1994, 'Drama', 9.3),
        (2, 'The Godfather', 1972, 'Crime', 9.2),
@@ -148,52 +148,52 @@ ADD CONSTRAINT EC_FriendsWith CONNECTION (Actors TO Actors);
 GO
 
 
---Примеры запросов:
---1. Получить все фильмы, режиссером которых является Francis Ford Coppola:
-SELECT DISTINCT m.Title AS [Фильмы, режиссером которых является Francis Ford Coppola]
+--РџСЂРёРјРµСЂС‹ Р·Р°РїСЂРѕСЃРѕРІ:
+--1. РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ С„РёР»СЊРјС‹, СЂРµР¶РёСЃСЃРµСЂРѕРј РєРѕС‚РѕСЂС‹С… СЏРІР»СЏРµС‚СЃСЏ Francis Ford Coppola:
+SELECT DISTINCT m.Title AS [Р¤РёР»СЊРјС‹, СЂРµР¶РёСЃСЃРµСЂРѕРј РєРѕС‚РѕСЂС‹С… СЏРІР»СЏРµС‚СЃСЏ Francis Ford Coppola]
 FROM Movies AS m
    , Directors AS d
    , Directed
 WHERE MATCH (d-(Directed)->m) 
-	  AND d.FullName = 'Francis Ford Coppola';
+      AND d.FullName = 'Francis Ford Coppola';
 
---2. Получить всех актеров, игравших в фильме "The Dark Knight":
-SELECT DISTINCT a.FullName AS [Актеры, игравшие в фильме The Dark Knight]
-              , ActedIn.RoleAct AS [Роль]
-			  , a.Nationality AS [Национальность] 
+--2. РџРѕР»СѓС‡РёС‚СЊ РІСЃРµС… Р°РєС‚РµСЂРѕРІ, РёРіСЂР°РІС€РёС… РІ С„РёР»СЊРјРµ "The Dark Knight":
+SELECT DISTINCT a.FullName AS [РђРєС‚РµСЂС‹, РёРіСЂР°РІС€РёРµ РІ С„РёР»СЊРјРµ The Dark Knight]
+              , ActedIn.RoleAct AS [Р РѕР»СЊ]
+	      , a.Nationality AS [РќР°С†РёРѕРЅР°Р»СЊРЅРѕСЃС‚СЊ]
 FROM Movies AS m
    , Actors AS a
    , ActedIn
 WHERE MATCH(a-(ActedIn)->m) 
 	  AND m.Title = 'The Dark Knight';
 
---3. Получить все фильмы, в которых играл Christian Bale:
-SELECT m.Title AS [Фильмы, в которых играл Christian Bale]
-	 , ActedIn.RoleAct AS [Роль]
+--3. РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ С„РёР»СЊРјС‹, РІ РєРѕС‚РѕСЂС‹С… РёРіСЂР°Р» Christian Bale:
+SELECT m.Title AS [Р¤РёР»СЊРјС‹, РІ РєРѕС‚РѕСЂС‹С… РёРіСЂР°Р» Christian Bale]
+     , ActedIn.RoleAct AS [Р РѕР»СЊ]
 FROM Movies AS m
    , Actors AS a
    , ActedIn
 WHERE MATCH(a-(ActedIn)->m) 
       AND a.FullName = 'Christian Bale';
 
---4. Получить все фильмы, рекомендованные режиссером Christopher Nolan:
-SELECT r.Title AS [Фильмы, рекомендованные режиссером Christopher Nolan]
+--4. РџРѕР»СѓС‡РёС‚СЊ РІСЃРµ С„РёР»СЊРјС‹, СЂРµРєРѕРјРµРЅРґРѕРІР°РЅРЅС‹Рµ СЂРµР¶РёСЃСЃРµСЂРѕРј Christopher Nolan:
+SELECT r.Title AS [Р¤РёР»СЊРјС‹, СЂРµРєРѕРјРµРЅРґРѕРІР°РЅРЅС‹Рµ СЂРµР¶РёСЃСЃРµСЂРѕРј Christopher Nolan]
 FROM Directors AS d
    , Movies AS r
    , Recommends
 WHERE MATCH (d-(Recommends)->r) 
 	  AND d.FullName = 'Christopher Nolan';
 
---5. Получить всех режиссеров, рекомендующих фильм "The Shawshank Redemption":
-SELECT d.FullName AS [Режиссеры, рекомендующие фильм The Shawshank Redemption]
+--5. РџРѕР»СѓС‡РёС‚СЊ РІСЃРµС… СЂРµР¶РёСЃСЃРµСЂРѕРІ, СЂРµРєРѕРјРµРЅРґСѓСЋС‰РёС… С„РёР»СЊРј "The Shawshank Redemption":
+SELECT d.FullName AS [Р РµР¶РёСЃСЃРµСЂС‹, СЂРµРєРѕРјРµРЅРґСѓСЋС‰РёРµ С„РёР»СЊРј The Shawshank Redemption]
 FROM Directors AS d
     , Movies AS m
     , Recommends
 WHERE MATCH (m<-(Recommends)-d) 
 	  AND m.Title = 'The Shawshank Redemption';
 
---6. Найти всех актеров, которые играли в фильмах, в которых участвовал Morgan Freeman(коллег)
-SELECT DISTINCT a2.FullName AS [Коллеги актера Morgan Freeman]
+--6. РќР°Р№С‚Рё РІСЃРµС… Р°РєС‚РµСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ РёРіСЂР°Р»Рё РІ С„РёР»СЊРјР°С…, РІ РєРѕС‚РѕСЂС‹С… СѓС‡Р°СЃС‚РІРѕРІР°Р» Morgan Freeman(РєРѕР»Р»РµРі)
+SELECT DISTINCT a2.FullName AS [РљРѕР»Р»РµРіРё Р°РєС‚РµСЂР° Morgan Freeman]
 FROM Actors AS a1
    , ActedIn AS AI1
    , ActedIn AS AI2
@@ -203,17 +203,17 @@ WHERE MATCH (a1-(AI1)->m<-(AI2)-a2)
 	  AND a1.FullName = 'Morgan Freeman' 
 	  AND a2.FullName <> a1.FullName;
 
---7. Поиск фильмов, в которых снимался актер Jack Nicholson
-SELECT STRING_AGG(m.Title, '->') WITHIN GROUP (GRAPH PATH) AS [Фильмы, в которых снимался Jack Nicholson]
+--7. РџРѕРёСЃРє С„РёР»СЊРјРѕРІ, РІ РєРѕС‚РѕСЂС‹С… СЃРЅРёРјР°Р»СЃСЏ Р°РєС‚РµСЂ Jack Nicholson
+SELECT STRING_AGG(m.Title, '->') WITHIN GROUP (GRAPH PATH) AS [Р¤РёР»СЊРјС‹, РІ РєРѕС‚РѕСЂС‹С… СЃРЅРёРјР°Р»СЃСЏ Jack Nicholson]
 FROM Actors  AS a
      , Movies FOR PATH AS m
 	 , ActedIn FOR PATH 
 WHERE MATCH(SHORTEST_PATH(a(-(ActedIn)->m)+)) 
       AND a.FullName = 'Jack Nicholson';
 
---8. Найти всех актеров, которые дружат с актерами, с которыми дружит Tim Robbins, пройдя не более 3 шагов:
-SELECT a1.FullName AS [Актер]
-     , STRING_AGG(a2.FullName, '->') WITHIN GROUP (GRAPH PATH) AS [Друзья друзей]
+--8. РќР°Р№С‚Рё РІСЃРµС… Р°РєС‚РµСЂРѕРІ, РєРѕС‚РѕСЂС‹Рµ РґСЂСѓР¶Р°С‚ СЃ Р°РєС‚РµСЂР°РјРё, СЃ РєРѕС‚РѕСЂС‹РјРё РґСЂСѓР¶РёС‚ Tim Robbins, РїСЂРѕР№РґСЏ РЅРµ Р±РѕР»РµРµ 3 С€Р°РіРѕРІ:
+SELECT a1.FullName AS [РђРєС‚РµСЂ]
+     , STRING_AGG(a2.FullName, '->') WITHIN GROUP (GRAPH PATH) AS [Р”СЂСѓР·СЊСЏ РґСЂСѓР·РµР№]
 FROM Actors AS a1
    , FriendsWith FOR PATH
    , Actors FOR PATH AS a2
