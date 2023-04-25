@@ -1,13 +1,13 @@
---Âèçóàëèçàöèÿ Force-Directed Graph.
+--Ð’Ð¸Ð·ÑƒÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Force-Directed Graph.
 
 SELECT @@SERVERNAME
--- Ñåðâåð: ageenkoas\SQLEXPRESS03
--- Áàçà äàííûõ: Cinema
+-- Ð¡ÐµÑ€Ð²ÐµÑ€: ageenkoas\SQLEXPRESS03
+-- Ð‘Ð°Ð·Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…: Cinema
 --https://raw.githubusercontent.com/ageenkoasa/DB_Cinema/main/img/
 
 USE Cinema;
 
---Âûáåðåì àêòåðîâ, èãðàþùèõ â îäíîì ôèëüìå:
+--Ð’Ñ‹Ð±ÐµÑ€ÐµÐ¼ Ð°ÐºÑ‚ÐµÑ€Ð¾Ð², Ð¸Ð³Ñ€Ð°ÑŽÑ‰Ð¸Ñ… Ð² Ð¾Ð´Ð½Ð¾Ð¼ Ñ„Ð¸Ð»ÑŒÐ¼Ðµ:
 
 SELECT a.ActorID IdFirst
      , a.FullName AS First
@@ -21,7 +21,7 @@ FROM dbo.Actors AS a
 WHERE MATCH (a-(ActedIn)->m)
 
 
--- Âûáåðåì ôèëüìû, ðåêîìåíäîâàííûå ðåæèññåðàìè
+-- Ð’Ñ‹Ð±ÐµÑ€ÐµÐ¼ Ñ„Ð¸Ð»ÑŒÐ¼Ñ‹, Ñ€ÐµÐºÐ¾Ð¼ÐµÐ½Ð´Ð¾Ð²Ð°Ð½Ð½Ñ‹Ðµ Ñ€ÐµÐ¶Ð¸ÑÑÐµÑ€Ð°Ð¼Ð¸
 
 SELECT d.DirectorID IdDirector
 	 , d.FullName AS Director
@@ -32,4 +32,5 @@ SELECT d.DirectorID IdDirector
      , m.Rating
 FROM dbo.Directors AS d
    , dbo.Recommends 
-   , dbo.Movies AS mWHERE MATCH (d-(Recommends)->m)
+   , dbo.Movies AS m
+WHERE MATCH (d-(Recommends)->m)
