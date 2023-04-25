@@ -218,4 +218,4 @@ FROM Actors AS a1
    , FriendsWith FOR PATH
    , Actors FOR PATH AS a2
 WHERE MATCH(SHORTEST_PATH(a1(-(FriendsWith)->a2){1,3}))
-	  AND a1.FullName = 'Tim Robbins'
+      AND a1.FullName = 'Tim Robbins'
